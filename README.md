@@ -6,21 +6,29 @@ Container Registry if no CRITICAL (fixable) vulnerabilities are found.
 
 ## Branches
 
-- `vulnerable` — `Dockerfile` is pinned (by digest) to `node:18.0.0`, which
-  Trivy consistently flags with a CRITICAL, fixed vulnerability. The push
-  step is skipped because the scan step fails first.
-- `main` — `Dockerfile` is pinned to `node:22-alpine`, a currently clean base
-  image. The scan passes and the push step runs.
+- `vulnerable` — `Dockerfile` is pinned **by digest** to a `debian:bullseye`
+  build from 2021. That digest is immutable, so Trivy will always find the
+  same 17 CRITICAL, fixable CVEs — the scan step fails and the push step is
+  skipped.
+- `main` — `Dockerfile` uses the current `debian:bookworm-slim` tag
+  (not pinned). Debian keeps rebuilding/patching this tag, so it keeps
+  scanning clean without any maintenance here — the scan passes and the push
+  step runs.
 
-Both Dockerfiles reference base images by **immutable digest** (not a
-floating tag), so the scan results are reproducible indefinitely — the
-"vulnerable" branch will keep finding the same CVE and the "main" branch will
-keep passing, regardless of when the demo is run.
+This split is designed to need zero upkeep: the vulnerable side is frozen in
+time by digest, and the fixed side rides upstream's own patch cadence. Both
+were verified locally with `trivy image --severity CRITICAL --ignore-unfixed`.
 
 ## Required repo secrets
 
-Set these before the push step will work against a real registry:
+Set these before the "Push to ACR" step will work against a real registry:
 
 - `ACR_LOGIN_SERVER`
 - `ACR_USERNAME`
 - `ACR_PASSWORD`
+
+```bash
+gh secret set ACR_LOGIN_SERVER --body "<registry>.azurecr.io"
+gh secret set ACR_USERNAME --body "<username>"
+gh secret set ACR_PASSWORD --body "<password>"
+```
