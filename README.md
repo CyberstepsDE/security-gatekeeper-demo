@@ -10,10 +10,11 @@ Container Registry if no CRITICAL (fixable) vulnerabilities are found.
   build from 2021. That digest is immutable, so Trivy will always find the
   same 17 CRITICAL, fixable CVEs — the scan step fails and the push step is
   skipped.
-- `main` — `Dockerfile` uses the current `debian:bookworm-slim` tag
-  (not pinned). Debian keeps rebuilding/patching this tag, so it keeps
-  scanning clean without any maintenance here — the scan passes and the push
-  step runs.
+- `main` — `Dockerfile` uses the `debian:stable-slim` tag (not pinned), which
+  always resolves to whichever Debian release is current stable (Trixie as of
+  writing). Debian keeps rebuilding/patching this tag, so it keeps scanning
+  clean without any maintenance here — even as "stable" itself moves on to
+  future releases — and the push step runs.
 
 This split is designed to need zero upkeep: the vulnerable side is frozen in
 time by digest, and the fixed side rides upstream's own patch cadence. Both
