@@ -1,10 +1,9 @@
 name: Security Gatekeeper Pipeline
 
-# Trigger the workflow when pushing to the vulnerable branch, or to main
-# (where the fix lives), plus manual runs for testing.
+# Trigger the workflow on every push to main, plus manual runs for testing.
 on:
   push:
-    branches: [ "vulnerable", "main" ]
+    branches: [ "main" ]
   workflow_dispatch: # Allows manual triggering for testing
 
 jobs:

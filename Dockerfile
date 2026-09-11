@@ -1,12 +1,10 @@
-# Fixed: python:3-slim always resolves to the current Python 3 slim build,
-# not pinned to a digest. Upstream keeps rebuilding/patching this tag, so it
-# keeps scanning clean without any maintenance here. The API key is no
-# longer baked into the image, and the app runs as a non-root user.
-FROM python:3-slim
+# Pinned by digest to python:3.8-slim, so this always resolves to the same
+# old, unpatched package set — Trivy always finds the same 4 CRITICAL,
+# fixable CVEs, no matter when this demo is run.
+FROM python@sha256:1d52838af602b4b5a831beb13a0e4d073280665ea7be7f69ce2382f29c5a613f
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt \
-    && useradd --create-home appuser \
-    && chown -R appuser:appuser /app
-USER appuser
+RUN pip install -r requirements.txt
+ENV API_KEY="super-secret-key"
+USER root
 CMD ["python", "app.py"]
