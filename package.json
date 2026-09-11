@@ -1,9 +1,0 @@
-{
-  "name": "security-gatekeeper-demo",
-  "version": "1.0.0",
-  "description": "Minimal demo app for the Security Gatekeeper CI/CD pipeline",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  }
-}
